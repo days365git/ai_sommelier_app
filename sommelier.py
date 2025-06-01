@@ -136,7 +136,8 @@ def search_wine(dish_flavor):
     reviews_ko = []
     for doc, score in results:
         review_ko = translate_to_korean(doc.page_content)
-        reviews_ko.append(f"[유사도: {score:.2f}]\n{review_ko}")
+        percent = int(score * 100)
+        reviews_ko.append(f"[유사도: {percent}%]\n{review_ko}")
 
     return {
         "dish_flavor": dish_flavor,
