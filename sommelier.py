@@ -126,13 +126,17 @@ def translate_to_korean(text):
     return chain.invoke({"text": text})
 
 def search_wine(dish_flavor):
-    results = vector_store.similarity_search(
+    # results = vector_store.similarity_search(
+    # Pinecone에서 유사도 점수와 함께 검색
+    results = vector_store.similarity_search_with_score(
         dish_flavor,
         k=2
     )
-    # 영어 리뷰를 한글로 번역
-    reviews = [doc.page_content for doc in results]
-    reviews_ko = [translate_to_korean(review) for review in reviews]
+    # 영어 리뷰를 한글로 번역하고, 유사도 점수 표시
+    reviews_ko = []
+    for doc, score in results:
+        review_ko = translate_to_korean(doc.page_content)
+        reviews_ko.append(f"[유사도: {score:.2f}]\n{review_ko}")
 
     return {
         "dish_flavor": dish_flavor,
